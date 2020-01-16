@@ -1,4 +1,4 @@
-**Hybrid Tuner for Hyperparameter Tuning**
+# **Hybrid Tuner for Hyperparameter Tuning**
 
 Install the following directory with:
 'pip install -e .' 
