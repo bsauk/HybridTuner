@@ -1,0 +1,77 @@
+This is a simple interface between Matlab and the DGQT routine of MINPACK2.  It
+utilizes the MEX interface for Matlab (see the External Interface Guide
+from Mathworks).
+
+Along with this file, there is a Makefile and four files of Fortran code.
+First the dgqt.f and destsv.f files are the Fortran exactly from MINPACK
+(destsv is needed by dgqt).  The xerbla_replacement.f file is a replacement for
+the xerbla (error routine) from LAPACK: it is need because code called from
+Matlab should not do direct Fortran writes: they should call the Matlab error
+routine mexErrMsgTxt.
+
+Finally, the file soltr.f contains the Gateway function (called mexFunction).
+This simply processes and checks the inputs, allocates the outputs and work
+arrays and then calls dgqt.
+
+Note that for the Makefile to work, you must have the Lapack and BLAS libraries
+installed in a "normal" place: they are linked in via "-llapack -lblas"
+arguments to fmex (the mex complier).
+
+After making the soltr.??? file (the extension depends on the architechure
+you're on) you can use the function "soltr" (for solve trust region) inside
+Matlab.  The calling information is as follows:
+
+[f, x {, iter, info, par}] = soltr(A, b, delta {, rtol, atol, itmax, par})
+
+Note that the items inside {...} are optional: the defaults (for the optional
+inputs) are given below.
+
+This command solves the trust region problem
+
+	  min f(x) = 1/2 * x' * A * x + b' * x
+	  s.t.   norm(x) <= delta
+
+Input: 
+	A -- A real square symmetric matrix.  Note that at this time the
+		symmetry of A is not checked and only the upper triangle
+		of A is used.
+
+	b -- A vector who's size matches A.
+
+	delta -- the trust radius.
+
+	rtol -- The relative accuracy desired in the solution (default 1E-10).
+
+	atol -- The absolute accuracy desired in the solution (default 1E-10).
+
+	itmax -- The maximum number of iterations (default 100).
+
+	par -- The initial estimate of the Lagrange multiplier for the
+	       constraint norm(x) <= delta (default 0).
+
+Output:
+
+	f -- the optimal function value reached i.e. f(x) at the x given below.
+
+	x -- the final estimate of the solution.
+
+	iter -- the number of iterations that the code went through to get
+		the solution.  It is not clear if this is actually supported
+		by dgqt.  The dgqt routine included here has this parameter
+		included, but does not document it.
+
+	info -- Information about the solution:
+		  info = 1  The function value f(x) has the relative
+			    accuracy specified by rtol.
+		  info = 2  The function value f(x) has the absolute
+			    accuracy specified by atol.
+		  info = 3  Rounding errors prevent further progress.
+			    On exit x is the best available approximation.
+		  info = 4  Failure to converge after itmax iterations.
+			    On exit x is the best available approximation.
+
+	par --  The final estimate of the Lagrange multiplier.
+
+
+Please see the documentation included in the dgqt.f file for more information
+about these parameters (the naming conventions have been kept the same).
