@@ -9,7 +9,7 @@
  "global_target": 0, 
  "executable": "myexec", 
  "outdir": "tmp", 
- "dfo_path": "/home/bsauk/Documents/research/5thyear/Hybrid_Tuner/hybrid_tuner/solvers",
+ "dfo_path": "../../solvers",
  "printopt": 1, 
  "matlab_path": "/usr/local/bin", 
  "solver": 10}
