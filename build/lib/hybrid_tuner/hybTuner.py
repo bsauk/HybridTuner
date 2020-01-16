@@ -147,7 +147,7 @@ class hybClass():
         with open(self.tdir + '/' +  str(solver) + '.script', "w") as f:
             f.write(template.render(nvars=self.nvars, PID=processID, executable=self.dirpath + '/' + self.executable, 
                                     start_time=self.s_time, input=self.input, output=self.output, 
-                                    printopt=self.printopt, limit_evals=self.frequency, 
+                                    printopt=self.printopt, limit_evals=self.limit_evals, 
                                     global_tolerance=self.global_tolerance, global_solution=self.global_solution))
             f.close()
         st = os.stat(self.tdir + '/' + str(solver) + '.script')
@@ -169,7 +169,7 @@ class hybClass():
         with open(self.tdir + '/matlab_main1.m', "w") as f:
             f.write(template.render(var_params=var_params, global_solution=self.global_solution, global_tolerance=self.global_tolerance))
 
-        if solver == 7:
+        if solver == 'mcs':
             inPair = 'data, x'
         else:
             inPair = 'x, Prob'
@@ -180,7 +180,7 @@ class hybClass():
 
         template = Template(filename=self.dfo_path + '/func_f.m.mako', strict_undefined=True)
         with open(self.tdir + '/func_f.m', "w") as f:
-            f.write(template.render(fin_loop=fin_loop, nvars=self.nvars, limit_evals=self.frequency, 
+            f.write(template.render(fin_loop=fin_loop, nvars=self.nvars, limit_evals=self.limit_evals, 
                                     executable=self.dirpath+'/'+self.executable, inPair=inPair))
         
         filenames = [self.tdir + '/matlab_main1.m', self.tdir + '/matlab_main2.m', self.tdir + '/matlab_main3.m']
@@ -190,7 +190,7 @@ class hybClass():
                     shutil.copyfileobj(fd, wfd)
     
     def dfo_iteration(self, solver):
-        if solver == 7 or solver == 8 or solver == 15:
+        if solver == 8 or solver == 15:
             self.matlab_setup(solver)
             fun = '-r "addpath(\'' + self.tdir + '\'); matlab_main; exit"'
             cmd = ['matlab', '-nodisplay', '-nosplash', fun]
@@ -201,7 +201,7 @@ class hybClass():
             cmd = [self.dfo_path + '/HOPSPACK_main_serial', 'hopspack_input.in', '&']
             with open(self.tdir + '/' + str(solver) + '.results', "w") as outfile:
                 code = subprocess.run(cmd, timeout=self.time_iter, stdout=outfile)
-
+                
     def update_x0(self):
         fn = open('best_objective', 'r')
         curr = float(fn.read())
@@ -248,26 +248,33 @@ class hybClass():
         fall.close()
         
         self.update_x0()
-        self.elapsed += elapsed
         try:
             os.remove('evals.res')
         except:
             print('evals.res does not exist')
-
         return elapsed
+        
+    def directInit(self):
+        nlo = pyOpt(self)
+        self.x0, self.incumbent, self.elapsed = nlo.direct(self.init_limit, self.time_iter, self.nvars)
+        for i in range(0, len(self.x0)):
+            if self.ints[i] == 1:
+                self.x0[i] = round(self.x0[i])                            
 
-    def hybInit(self, dfo):
-        if self.init == 'direct':
-            nlo = pyOpt(self)
-            self.x0, self.incumbent, self.elapsed = nlo.direct(self.init_limit, self.time_iter, self.nvars)
-            for i in range(0, len(self.x0)):
-                if self.ints[i] == 1:
-                    self.x0[i] = round(self.x0[i])                            
-        elif self.init == 'mcs':
-            elapsed = self.run_tuning_iteration(7, dfo)
+    def mcsInit(self, dfo):
+        dfo.call_dfo(7)
+        self.matlab_setup('mcs')
+        fun = '-r "addpath(\'' + self.tdir + '\'); matlab_main; exit"'
+        cmd = ['matlab', '-nodisplay', '-nosplash', fun]
+        with open(self.tdir + '/' + str(solver) +'.results', "w") as outfile:
+            code = subprocess.run(cmd, timeout=self.time_iter, stdout=outfile)
+        
 
     def BanditDFO(self, dfo):
-        self.hybInit(dfo)
+        if self.init == 'direct':
+            self.directInit()
+        elif self.init == 'mcs':
+            self.mcsInit(dfo)
         # The following are the list of solvers that we have that accept starting points
         solvers = [8, 10, 15]
         if self.solver:
@@ -282,16 +289,14 @@ class hybClass():
             score[i] = 2
             Ht[i] = 0
         
-        #numer = self.window+self.frequency-2
-        #limit = numer/self.frequency
-        #func_evals = np.zeros((len(solvers), int(limit)))
-        func_evals = pd.DataFrame([0, 0, 0])
+        numer = self.window+self.frequency-2
+        limit = numer/self.frequency
+        func_evals = np.zeros((len(solvers), int(limit)))
         period = 0
         # The following is the main loop of the bandit function
         while self.elapsed < self.limit_evals:
             fminus = self.run_tuning_iteration(next_solver, dfo) # define this to be an iteration of a specified solver
-            if self.incumbent == self.global_solution:
-                break
+            self.elapsed = self.elapsed + fminus
             H = self.elapsed
             buff = 0
             if (self.elapsed-self.window > 0):
@@ -300,13 +305,10 @@ class hybClass():
             for k in range(len(solvers)):
                 idx = solvers[k]
                 if next_solver == idx:
-                    func_evals.loc[k, round(period)] = fminus
+                    func_evals[k, round(period % limit)] = fminus
                 # Calculate the Ht term:
                 counter = 0
-                Ht[idx] = sum(func_evals.loc[k])
-                # Append a new column to the dataframe in case we have another iteration
-                period += 1
-                func_evals[period] = 0
+                Ht[idx] = sum(func_evals[k])
 
                 # Now we calculate Vti
                 try:
@@ -332,10 +334,20 @@ class hybClass():
             maxValue = max(score.values())
             keys = [key for key, value in score.items() if value == maxValue]
             next_solver = random.choice(keys)
+            period = period + 1            
+
+        #BanditDFO has finished, report results below
+        print('BanditDFO has completed!\n')
+        print('Best Solution = ' + str(self.incumbent) + ' found after ' + str(self.elapsed) + ' iterations!')       
 
     def HybridDFO(self, dfo):
-        self.hybInit(dfo)
+        self.directInit()
         elapsed = self.run_tuning_iteration(self.hybrid_solver, dfo) # define this to be an iteration of a specified solver
+        self.elapsed = self.elapsed + elapsed
+
+        #HybridDFO has finished, report results below
+        print('HybridDFO has completed!\n')
+        print('Best Solution = ' + str(self.incumbent) + ' found after ' + str(self.elapsed) + ' iterations!')       
 
     def SingleSolver(self, dfo):
         solver = int(self.solver)
@@ -344,34 +356,10 @@ class hybClass():
         f.close()
 
         elapsed = self.run_tuning_iteration(solver, dfo)
+        self.elapsed = self.elapsed + elapsed
 
-    def visualizeResults(self, method):
-        if method == 'Bandit':
-            print('BanditDFO has completed!\n')
-            print('Best Solution = ' + str(self.incumbent) + ' found after ' + str(self.elapsed) + ' iterations!')       
-        elif method == 'Hybrid':
-            print('HybridDFO has completed!\n')
-            print('Best Solution = ' + str(self.incumbent) + ' found after ' + str(self.elapsed) + ' iterations!')       
-        elif method == 'Single':
-            print(str(self.solver) + ' has completed!\n')
-            print('Best Solution = ' + str(self.incumbent) + ' found after ' + str(self.elapsed) + ' iterations!')
+        #DFO has finished, report results below
+        print(str(self.solver) + ' has completed!\n')
+        print('Best Solution = ' + str(self.incumbent) + ' found after ' + str(self.elapsed) + ' iterations!')
 
-        fn = open('allEvals.res', 'r')
-        data = np.genfromtxt(fn)
-        xtmp = data[:,0]
-        ytmp = data[:,-1]
-        y0 = ytmp[0]
-        y = []
-        x = xtmp.tolist()
-        for i in ytmp:
-            if i <= y0:
-                y0 = i
-            y.append(y0)
-        
-        plt.scatter(x, y)
-        plt.xlabel('Iteration Number')
-        plt.ylabel('Objective Value')
-        plt.savefig('evalsPlot')
-
-
-            
+    

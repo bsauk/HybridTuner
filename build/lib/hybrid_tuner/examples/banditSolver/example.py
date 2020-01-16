@@ -17,7 +17,7 @@ def main(args, ht, dfo):
         ht.SingleSolver(dfo)
         shb = 'Single'
 
-    ht.visualizeResults(shb)
+#    ht.visualizeResults(shb)
     error = 0
 
     try:

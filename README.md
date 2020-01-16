@@ -2,7 +2,6 @@
 
 Install the following directory with:
 'pip install -e .' 
-You can also run 'python setup.py install.' 
 
 We have included several examples in the Example directory.
 In each example file, modify 'matlab_path' to the location of your MATLAB installation, or remove it if you do not have MATLAB installed.
