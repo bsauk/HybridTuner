@@ -9,8 +9,6 @@
  "global_target": 0, 
  "executable": "myexec", 
  "outdir": "tmp", 
- "dfo_path": "/home/bsauk/Documents/research/5thyear/HybridTuner/hybrid_tuner/solvers",
- "bandit": "bparams.json",
+ "hybrid": "hparams.json", 
  "printopt": 1, 
- "matlab_path": "/usr/local/bin", 
  "solver": 8}

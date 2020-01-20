@@ -4,7 +4,10 @@ import os
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('params', help='Location of the parameter file being used. Requires a .json file.')
+parser.add_argument('params',
+                    help='Location of the parameter file.'
+                    'Requires a .json file.')
+
 
 def main(args, ht, dfo):
     if ht.bandit:
@@ -22,12 +25,13 @@ def main(args, ht, dfo):
 
     try:
         os.chdir(ht.dirpath)
-    except:
+    except KeyError:
         print('Error returning to home directory')
 
     return error
 
-if __name__  == '__main__':
+
+if __name__ == '__main__':
     args = parser.parse_args()
     ht = hybClass(args)
     dfo = dfoClass(ht)

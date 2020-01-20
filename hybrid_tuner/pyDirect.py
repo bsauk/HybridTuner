@@ -1,6 +1,6 @@
 import nlopt
 import subprocess
-import time 
+
 
 class pyOpt():
     def __init__(self, hybClass):
@@ -12,15 +12,17 @@ class pyOpt():
         for i in x:
             fn.write(str(i) + '\n')
         fn.close()
-        f_x = subprocess.run([self.hybClass.dirpath + '/' + self.hybClass.executable], shell=True)
+        subprocess.run([self.hybClass.dirpath + '/' +
+                        self.hybClass.executable], shell=True)
         fn = open(self.hybClass.tdir + '/' + self.hybClass.output, "r")
-        f_out = fn.readline()    
+        f_out = fn.readline()
         fn.close()
         self.iter = self.iter + 1
         fn = open(self.hybClass.tdir + '/' + 'allEvals.res', "a")
-        fn.write(str(self.iter) + '   ' + '   '.join('%.5f' % i for i in x) + '   ' + '%.5f\n' % float(f_out))
+        fn.write(str(self.iter) + '   ' + '   '.join('%.5f' % i for i in x) +
+                 '   ' + '%.5f\n' % float(f_out))
         fn.close()
-        return( float(f_out) )
+        return(float(f_out))
 
     def direct(self, iter_limit, time_limit, nvars):
         opt = nlopt.opt(nlopt.GN_DIRECT_L, nvars)
@@ -38,4 +40,3 @@ class pyOpt():
         evals = opt.get_numevals()
 
         return x_opt, y_opt, evals
-
