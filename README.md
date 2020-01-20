@@ -1,4 +1,4 @@
-# **Hybrid Tuner for Hyperparameter Tuning**
+B# **Hybrid Tuner for Hyperparameter Tuning**
 
 Install the following directory with:
 'pip install -e .' 
@@ -15,19 +15,25 @@ Required Format:
 ## **If you have MATLAB and attempt to run the example files with solver = 8:**
 
 Bandit DFO will return:
+
 "Bandit DFO has completed!"
+
 "Best Solution = 1.0 found after 102 iterations!"
 
 ![Image from Bandit DFO run](/examples/BanditDFO/banditResults.png)
 
 Hybrid DFO will return:
+
 "Hybrid DFO has completed!"
+
 "Best Solution = 1.0 found after 28 iterations!"
 
 ![Image from Hybrid DFO run](/examples/HybridDFO/hybridResults.png)
 
 The single DFO solver SID-PSM will return:
+
 "8 has completed!"
+
 "Best Solution = 1.0 found after 60 iterations!"
 
 ![Image from HOPSPACK DFO run](/examples/SingleSolver/10Results.png)
