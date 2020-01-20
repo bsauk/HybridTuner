@@ -1,4 +1,5 @@
-**Hybrid Tuner for Hyperparameter Tuning**
+# **Hybrid Tuner for Hyperparameter Tuning**
+===================
 
 Install the following directory with:
 'pip install -e .' 
@@ -12,7 +13,7 @@ Required Format:
 1. Parameters are read from myin into black-box function
 2. Output is written to myout
 
-*If you have MATLAB and attempt to run the example files with solver = 8:*
+## **If you have MATLAB and attempt to run the example files with solver = 8:**
 
 Bandit DFO will return:
 
