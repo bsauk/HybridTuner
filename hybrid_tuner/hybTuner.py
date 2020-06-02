@@ -107,7 +107,7 @@ class hybClass():
 
         self.dirpath = os.getcwd()
         self.tdir = self.dirpath + '/' + self.outdir
-        self.incumbent = 1000000
+        self.incumbent = 1000000.00
         self.s_time = round(time.time())
         self.elapsed = 0
         for i in range(0, len(self.x0)):
@@ -474,8 +474,10 @@ class hybClass():
                   str(self.elapsed) + ' iterations!')
         elif method == 'Hybrid':
             print('HybridDFO has completed!')
-            print('Best Solution = ' + str(self.incumbent) + ' found after ' +
+            print('Best Solution = ' + '%.5f' % self.incumbent + ' found after ' +
                   str(self.elapsed) + ' iterations!')
+#            print('Best Solution = ' + str(self.incumbent) + ' found after ' +
+#                  str(self.elapsed) + ' iterations!')
         elif method == 'Single':
             print(str(self.solver) + ' has completed!')
             print('Best Solution = ' + str(self.incumbent) + ' found after ' +

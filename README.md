@@ -23,29 +23,13 @@ Required Format:
 3. Parameter lower and upper bounds are defined in the file myparams.json
 
 ### **Example outputs: when using MATLAB and solver = 8:**
-Executing "python example.py myparams.json" in the BanditDFO directory will return the following:
+Executing "python example.py myparams.json" in the ./examples/BanditDFO directory will return the following:
 
 "Bandit DFO has completed"
 
-"Best Solution = 1.0 found after 102 iterations"
+"Best Solution = 1.0 found after 105 iterations"
 
 ![Image from Bandit DFO run](/examples/BanditDFO/banditResults.png)
-
-Hybrid DFO will return:
-
-"Hybrid DFO has completed"
-
-"Best Solution = 1.0 found after 28 iterations"
-
-![Image from Hybrid DFO run](/examples/HybridDFO/hybridResults.png)
-
-The single DFO solver SID-PSM will return:
-
-"8 has completed"
-
-"Best Solution = 1.0 found after 60 iterations"
-
-![Image from HOPSPACK DFO run](/examples/SingleSolver/10Results.png)
 
 ## Papers
 * B. Sauk and N.V. Sahindis. HybridTuner: Tuning with hybrid derivative-free optimization initialization strategies. *Submitted* to ACM: TACO, 2 June, 2020.
