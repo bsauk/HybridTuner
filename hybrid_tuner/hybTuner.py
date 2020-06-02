@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 from mako.template import Template
 from hybrid_tuner.pyDirect import pyOpt
 
-
 class hybClass():
     '''
     This is the definition of the hybClass module.
@@ -24,10 +23,10 @@ class hybClass():
     The only requirement for this module is a defined myparams.json file.
     The params file should provide:
     a. num_params: Number of hyper parameters
-    b. lower_bounds: Variable lower bounds provided as an array
-    c. upper_bounds: Variable upper bounds provided as an array
-    d. starting_point: Variable starting points provided as an array
-    e. var_type: Variable type, 0 is cont. and 1 is integer provided as array
+    b. lower_bounds: Variable lower bounds provided as an array with length num_params
+    c. upper_bounds: Variable upper bounds provided as an array with length num_params
+    d. starting_point: Variable starting points provided as an array with length num_params
+    e. var_type: Variable type, 0 is cont. and 1 is integer provided as array with length num_params
     f. max_iterations: Number of iterations to the black-box function
     g. global_tol: Stops within tolerance of the optimal solution if provided
     h. cpu_limit: Max amount of time to spend on the search provided in seconds
@@ -313,10 +312,9 @@ class hybClass():
         dfI = df.astype({0: 'int32'})
         elapsed = int(dfI.tail(1)[0])
         dfI[0] = dfI[0] + self.elapsed
-        try:
-            dfI = dfI.drop([1, 5], axis=1)  # Drop time and best value columns
-        except KeyError:
-            dfI = dfI.drop([1], axis=1)  # Drop time column
+        if (len(dfI.columns) > self.nvars+3):
+            dfI = dfI.drop([self.nvars+3], axis=1) # Drop column with best iteration and only keep current iteration
+        dfI = dfI.drop([1], axis=1)  # Drop odd column
         fn.close()
         fsolve = open(str(solver) + '.res', 'a')
         data = dfI.to_string(index=False, header=False) + '\n'

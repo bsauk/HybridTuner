@@ -1,5 +1,5 @@
 {"init": "direct", 
- "frequency": 51, 
+ "frequency": 21, 
  "cParam": 0.05, 
  "window": 500, 
- "init_limit": 50}
+ "init_limit": 20}
