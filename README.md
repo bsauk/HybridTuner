@@ -34,7 +34,8 @@ Executing "python example.py myparams.json" in the ./examples/BanditDFO director
 ![Image from Bandit DFO run](/examples/BanditDFO/banditResults.png)
 
 ## Papers
-* B. Sauk and N.V. Sahindis. HybridTuner: Tuning with hybrid derivative-free optimization initialization strategies. 
+* B. Sauk and N.V. Sahindis. HybridTuner: Tuning with hybrid derivative-free optimization initialization strategies. ![Link to Paper](/HybridTuner.pdf)
+
 
 ## Support
 * This work was conducted as part of the Institute for the Design of Advanced Energy Systems(IDAES) with funding from the Office of Fossil Energy, Cross-Cutting Research, U.S. Department of Energy. 
