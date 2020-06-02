@@ -8,7 +8,7 @@ Install the following directory with:
 HybridTuner is usable with only Python libraries.
 
 However, HybridTuner greatly benefits from the use of:
-1. Matlab
+1. MATLAB
 2. TOMLAB glcDIRECT
 
 All of the results reported in the corresponding paper make use of the TOMLAB and MATLAB solvers described within. 
