@@ -11,6 +11,8 @@ However, HybridTuner greatly benefits from the use of:
 1. Matlab
 2. TOMLAB glcDIRECT
 
+All of the results reported in the corresponding paper make use of the TOMLAB and MATLAB solvers described within. 
+
 ## Examples
 We have included several examples in the Example directory.
 To run an example file, modify 'matlab_path' to the location of your MATLAB installation, or remove it if you do not have MATLAB installed. 
