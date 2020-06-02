@@ -1,7 +1,7 @@
 function f = func_f(${inPair});
 
-global bl
 global bu
+global bl
 global global_counter
 global global_objective
 global global_evaluation
