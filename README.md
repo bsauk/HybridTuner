@@ -34,7 +34,7 @@ Executing "python example.py myparams.json" in the ./examples/BanditDFO director
 ![Image from Bandit DFO run](/examples/BanditDFO/banditResults.png)
 
 ## Papers
-* B. Sauk and N.V. Sahindis. HybridTuner: Tuning with hybrid derivative-free optimization initialization strategies. [Link to Paper](/HybridTuner.pdf)
+* B. Sauk and N.V. Sahindis. HybridTuner: Tuning with hybrid derivative-free optimization initialization strategies.
 
 
 ## Support
