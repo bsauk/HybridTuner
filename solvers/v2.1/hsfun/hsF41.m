@@ -1,2 +1,2 @@
-function F = hsF41(x)
-F = x(1)+2*x(2)+2*x(3)-x(4);
+function f = hsf41(x)
+f = 2-x(1)*x(2)*x(3);

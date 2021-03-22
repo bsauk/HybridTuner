@@ -3,7 +3,7 @@ import os
 
 class dfoClass():
     def __init__(self, hybClass):
-        self.tune = hybClass
+        self.tune = hybClass 
 
     def call_dfo(self, idx):
         '''

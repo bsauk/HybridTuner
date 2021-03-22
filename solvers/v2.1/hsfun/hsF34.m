@@ -1,3 +1,2 @@
-function F = hsF34(x)
-F(1) = x(2)-exp(x(1));
-F(2) = x(3)-exp(x(2));
+function f = hsf34(x)
+f = -x(1);

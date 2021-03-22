@@ -1,2 +1,2 @@
-function F = hsF30(x)
-F = x(1)^2+x(2)^2-1;
+function f = hsf30(x)
+f = sum(x(1:3).^2);

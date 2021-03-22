@@ -40,4 +40,4 @@ Executing "python example.py myparams.json" in the ./examples/BanditDFO director
 ## Support
 * This work was conducted as part of the Institute for the Design of Advanced Energy Systems(IDAES) with funding from the Office of Fossil Energy, Cross-Cutting Research, U.S. Department of Energy. 
 * This work used the Extreme Science and Engineering Discovery Environment (XSEDE),which is supported by National Science Foundation grant number ACI-1548562. Specifically, it used the Bridges system, which is supported by NSF award number ACI-1445606, at the Pittsburgh Super-computing Center (PSC). 
-* We also gratefully acknowledge the support of the NVIDIA Corporation with the donation of the NVIDIA Tesla K40 GPU used for this research.
+* We also gratefully acknowledge the support of the NVIDIA Corporation with the donation of the NVIDIA Tesla K40 GPU used for this research. 
